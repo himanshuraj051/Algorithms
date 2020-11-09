@@ -1,0 +1,23 @@
+ bool sortG(int u,  vector<int>G[], vector<int> &vis, vector<int>&v)
+    {
+        vis[u]=1;
+        
+        for(auto it: G[u])
+        {
+            if(!vis[it])
+            {
+                bool f=sortG(it,G,vis,v);
+                    if(!f)
+                        return f;
+            }
+            else if(vis[it]==1)
+                return false;
+        }
+        
+        vis[u]=2;
+        s.push(u);
+        
+        return true;
+    }
+
+//if it returns false means there is a cycle...
