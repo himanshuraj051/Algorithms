@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+#define pairs pair<int, int>
+#define ll long long
+#define INF 1e9
+using namespace std;
+const int maxn = 100005;
+ll dis[400][400],dp[400][400];
+ll b[maxn];
+
+int n,m;
+ll ans=INF;
+int main() 
+{
+	int n, m;
+	ll x;
+	scanf("%d", &n);
+	int tot=0;
+	for(int i=1;i<=n;i++) 
+    	{
+		scanf("%lld", &x);
+		if(x!=0) 
+        	b[++tot]=x;
+	}
+	n=tot;
+	for(int i=0;i<63;i++) 
+    	{
+		int cnt=0;
+		for(int j=1; j<=n; j++) 
+        	{
+			if((b[j]>>i) & 1) 
+            		cnt++;
+		}
+		if(cnt>=3) 
+        	{
+			printf("3\n");
+			return 0;
+		}
+	}
+	for(int i=1;i<=n;i++)
+	for(int j=1;j<=n;j++)
+	dis[i][j]=1e15,dp[i][j]=1e15;
+
+	for(int i=1;i<=n;i++) 
+    	dis[i][i]=0,dp[i][i]=0;
+
+	for(int i=1;i<=n;i++) 
+    	{
+		for(int j=1;j<=n;j++) 
+        	{
+			if(i==j)
+            		continue;
+
+			if(b[i]&b[j]) 
+            		dis[i][j]=1,dp[i][j]=1;
+		}
+    	}
+
+	for(int k=1;k<=n;k++) 
+    	{
+		for(int i=1;i<k;i++)
+		for(int j=i+1;j<k;j++) 
+        	{
+            		if(dp[i][j]+dis[i][k]+dis[k][j]<ans)
+            		ans=dp[i][j]+dis[i][k]+dis[k][j];
+        	}
+
+		for(int i=1;i<=n;i++)
+		for(int j=1;j<=n;j++) 
+        	{
+            		if(dp[i][j]>dp[i][k]+dp[k][j])
+            		dp[i][j]=dp[i][k]+dp[k][j];
+		}
+	}
+
+	if(ans>=1e9) 
+	    printf("-1\n");
+
+	else printf("%lld\n", ans);
+}

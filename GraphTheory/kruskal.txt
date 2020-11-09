@@ -1,0 +1,120 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll           int
+#define pb           push_back
+const int N=200005;
+
+vector<pair<int,pair<int,int>>>g;
+int n,d,par[N],res;
+
+struct mydata 
+{
+    int arr[6];
+    mydata()
+    {
+        for(int i=0;i<5;i++)
+        arr[i]=0;
+    }
+
+} node[N];
+
+int search(int u)
+{
+    if(par[u]<=-1)
+    {
+        return u;
+        cout<<1;
+    }
+
+    par[u]=search(par[u]);
+
+    return par[u];
+}
+
+void mix_it(int u,int v)
+{
+    u=search(u);
+    v=search(v);
+    
+    if(v==u)
+    {
+        return;
+    }
+    
+    if(par[u]<par[v])
+    {
+        par[u]+=par[v];
+        par[v]=u;
+    }
+    else
+    {
+        par[v]+=par[u];
+        par[u]=v;
+    }
+}
+
+void max_pathdis()
+{
+    sort(g.begin(),g.end(),greater<pair<int,pair<int,int>>>());
+
+    for(int i=0;i<=n;i++)
+    par[i]=-1;
+
+    for(auto t:g)
+    {
+        int u1=t.second.first;
+        int v1=t.second.second;
+        int wt=t.first;
+        
+        int u_found=search(u1),v_found=search(v1);
+        
+        if(u_found!=v_found)
+        {
+            mix_it(u1,v1);
+            res+=wt;
+        }
+    }
+}
+
+int main()
+{
+ 
+        cin>>n>>d;
+
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<d;j++)
+            {
+                cin>>node[i].arr[j];
+
+                // cout<<node[i].arr[j]<<endl;
+            }
+        }
+
+
+        for(int i=0;i<n;i++)
+        {
+            for(int j=i+1;j<n;j++)
+            {
+                int weight=0;
+
+                for(int k=0;k<d;k++)
+                {
+                    int diff=abs(node[i].arr[k]-node[j].arr[k]);
+
+                    // cout<<1<<endl;
+
+                    if(diff<0)
+                    diff*=-1;
+
+                    weight+=diff;
+                }
+
+                g.pb({weight,{i+1,j+1}});
+            }
+        }
+
+        max_pathdis();
+
+        cout<<res<<endl;
+}

@@ -1,0 +1,51 @@
+class Solution {
+public:
+    
+    void dfs(int u, vector<int>v[], map<int,int>&mp,bool &fl)
+    {
+        if(mp[u]==2)
+            return;
+        
+        mp[u]=1;
+        
+        for(auto t:v[u])
+        {
+            if(mp[t]==1)
+            { 
+                fl=1;
+                return;
+            }
+            if(mp[t]==0)
+            {
+                dfs(t,v,mp,fl);
+            }
+        }
+        
+        mp[u]=2;
+    }
+    
+    bool canFinish(int n, vector<vector<int>>& g) 
+    {
+        vector<int>v[n+5];
+        map<int,int>mp;
+        
+        for(int i=0;i<g.size();i++)
+        {
+            v[g[i][1]].push_back(g[i][0]);
+        }
+        
+        for(int t=0;t<n;t++)
+        {
+            if(mp[t]==0)
+            {
+                bool cycle=0;
+                    dfs(t,v,deg,cycle);
+                if(cycle)
+                    return false;
+            }
+        }
+
+        return true;
+        
+    }
+};

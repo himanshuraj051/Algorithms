@@ -1,0 +1,14 @@
+set<pairs>s1; vector<ll>dis(n+1,LONG_MAX);
+    dis[s]=0; s1.insert({dis[s],s});
+    while(!s1.empty()){
+        ll u=(*(s1.begin())).second; s1.erase(s1.begin());
+        for(auto it:v1[u]){
+            ll v=it.first, weight=it.second;
+            if(dis[v]>dis[u]+weight){
+                if(dis[v]!=LONG_MAX) s1.erase(s1.find({dis[v],v}));
+                dis[v]=dis[u]+weight;
+                s1.insert({dis[v],v});
+            }
+        }
+    }
+
