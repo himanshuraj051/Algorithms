@@ -1,0 +1,48 @@
+bool isBipartiteUtil(int u, int col[], int n, int g[][MAX])
+{
+    col[u]=1;
+    
+    queue<int>q;
+    
+    q.push(u);
+    
+    while(!q.empty())
+    {
+        int v=q.front();
+        q.pop();
+        
+        if(g[v][v])  //self loop
+        return false;
+        
+        for(int i=0;i<n;i++)
+        {
+            if(g[v][i] && col[i]==-1)
+            col[i]=1-col[v], q.push(i);
+            
+            else if(g[v][i] && col[i]==col[v])
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+bool isBipartite(int v[][MAX],int n)
+{
+    //Your code here
+    int col[n+1];
+    
+    for(int i=0;i<n;i++)
+    col[i]=-1;
+    
+    for(int i=0;i<n;i++)
+    if(col[i]==-1)
+    {
+        bool f=isBipartiteUtil(i,col,n,v);
+        if(!f)
+        return false;
+    }
+    
+    return true;
+    
+}
