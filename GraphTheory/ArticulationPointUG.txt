@@ -1,0 +1,100 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll           long long
+#define rep(i,j,n)   for(int i=j;i<n;i++)
+#define scn(a)       scanf("%d",&a)
+#define scns(a,b)    scanf("%d %d",&a,&b)
+#define print(a)     printf("%d",a)
+#define tc           int t; scn(t); while(t--)
+#define vec          vector<int>
+#define pb           push_back    
+#define pairs        pair<int,int>
+#define f            first
+#define s            second
+#define all(v)       v.begin(),v.end()
+#define srt(v)       sort(v.rbegin(),v.rend())
+#define mem(a,b)     memset(a,b,sizeof(a))
+#define nl           printf("\n")
+#define maxx         300005
+#define inf          INT_MAX
+#define zer          INT_MIN
+const int N=1e5+5;
+int n,m;
+int low[N],disc[N],ap[N];
+vector<int>adj[N];
+int Time=0;
+
+// Now we need to know if some vertex U is an articulation point. So, for that we will check the following conditions:
+
+//#1. If there is NO way to get to a node V with strictly smaller discovery time than the discovery time of U following the DFS traversal, then U is an articulation point. (it has to be strictly because if it is equal it means that U is the root of a cycle in the DFS traversal which means that U is still an articulation point).
+
+//#2. If U is the root of the DFS tree and it has at least 2 children subgraphs disconnected from each other, then U is an articulation point.
+
+
+
+int dfsAP(int u, int p) 
+{
+  int children = 0;
+  low[u]=disc[u]= ++Time;
+
+  for(int& v:adj[u]) 
+  {
+    if(v==p) 
+    continue; // we don't want to go back through the same path.
+                    // if we go back is because we found another way back
+    if(!disc[v]) 
+    {                   // if V has not been discovered before
+      children++;
+      dfsAP(v,u);        // recursive DFS call
+      
+      if(disc[u]<=low[v]) // condition #1
+      ap[u]=1;
+
+      low[u]=min(low[u],low[v]); // low[v] might be an ancestor of u
+    } 
+    else             // if v was already discovered means that we found an ancestor
+    low[u]=min(low[u],low[v]); // finds the ancestor with the least discovery time
+  }
+  return children;
+}
+
+void AP() 
+{
+  Time = 0;
+
+  for(int u=0;u<n;u++)
+    if(!disc[u])
+      ap[u]=dfsAP(u,u)>1; // condition #2
+}
+ 
+int main()
+{
+    cin>>n>>m;
+    
+    rep(i,0,m)
+    {
+        // scns(u[i],v[i]);
+        int u,v; cin>>u>>v;
+
+        u--,v--;
+    
+        adj[u].pb(v);
+        adj[v].pb(u);
+    }
+
+    AP();
+    int q; cin>>q;
+
+    while(q--)
+    {
+      int x; cin>>x;
+
+      x--;
+
+      if(ap[x])
+      cout<<"Satisfied "<<adj[x].size()<<endl;
+      else
+      cout<<"Not Satisfied\n";
+    }
+
+}

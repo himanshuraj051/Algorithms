@@ -1,0 +1,34 @@
+class Solution {
+public:
+    int nthUglyNumber(int n, int a, int b, int c) {
+        long long lcmab=1LL*a*b/__gcd(a,b);
+        long long lcmbc=1LL*b*c/__gcd(b,c);
+        long long lcmca=1LL*c*a/__gcd(c,a);
+        long long lcmabc=1LL*c*lcmab/__gcd(1LL*c,lcmab);
+        
+        long long l=1,r=1e18;
+        
+        int ans=-1;
+        while(l<=r)
+        {
+            long long m=l+(r-l)/2;
+            
+            long long cntofdiv = m/a + m/b + m/c;
+            cntofdiv-= (m/lcmab + m/lcmbc + m/lcmca);
+            cntofdiv+=m/lcmabc;
+            
+            if(cntofdiv==1LL*n)
+                ans=(int)m;
+            
+            if(cntofdiv<1LL*n)
+                l=m+1;
+            
+            else
+                r=m-1;
+        }
+        
+        return ans;
+    }
+};
+
+https://leetcode.com/problems/ugly-number-iii/submissions/
