@@ -91,3 +91,92 @@ int main()
 
     SSC();
 }
+
+=============================================================================================
+
+#include<bits/stdc++.h>
+using namespace std; 
+#define ll           long long
+#define rep(i,j,n)   for(int i=j;i<n;i++)
+#define scn(a)       scanf("%d",&a)
+#define scns(a,b)    scanf("%d %d",&a,&b)
+#define print(a)     printf("%d\n",a)
+#define vec          vector<int>
+#define pb           push_back    
+#define pairs        pair<int,int>
+#define f            first
+#define s            second
+#define all(v)       v.begin(),v.end()
+#define mem(a,b)     memset(a,b,sizeof(a))
+#define inf          INT_MAX
+const int mod=1e9+7;
+const int N=3e5+5;
+int t;
+
+int n,vis[N];
+vec v1[N];
+stack<int>s1;
+
+void dfs(int node,int par)
+{
+    vis[node]=1;
+
+    for(auto it:v1[node])
+    if(vis[it]==0)
+    dfs(it,node);
+
+    s1.push(node);
+}
+
+void dfs1(int node,int par)
+{
+    vis[node]=1;
+
+    for(auto it:v1[node])
+    if(vis[it]==0)
+    dfs1(it,node);
+}
+
+void init()
+{
+    rep(i,0,n+1)
+    v1[i].clear(),vis[i]=0;
+}
+
+int main()
+{
+    scn(t);
+
+    while(t--)
+    {
+        scn(n);
+
+        init();
+
+        rep(i,1,n)
+        {
+            int u,v; scns(u,v);
+
+            v1[u].pb(v);
+        }
+
+        int cnt=0;
+
+        rep(i,1,n+1)
+        if(vis[i]==0)
+        dfs(i,-1);
+
+        rep(i,0,n+1)
+        vis[i]=0;
+
+        while(s1.size()>0)
+        {
+            int node=s1.top(); s1.pop();
+
+            if(vis[node]==0)
+            dfs1(node,-1),cnt++;
+        }
+
+        print(cnt-1);
+    }
+}
