@@ -1,0 +1,212 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll           long long
+#define rep(i,j,n)   for(int i=j;i<n;i++)
+#define scn(a)       scanf("%d",&a)
+#define scns(a,b)    scanf("%d %d",&a,&b)
+#define print(a)     printf("%d",a)
+#define tc           int t; scn(t); while(t--)
+#define vec          vector<int>
+#define pb           push_back    
+#define pairs        pair<int,int>
+#define f            first
+#define s            second
+#define all(v)       v.begin(),v.end()
+#define srt(v)       sort(v.rbegin(),v.rend())
+#define mem(a,b)     memset(a,b,sizeof(a))
+#define nl           printf("\n")
+#define maxx         300005
+#define inf          INT_MAX
+#define zer          INT_MIN
+const int N=5e3+5;
+vector<int>adj[N];
+int capacity[N][N];
+
+int n,m,parent[N];
+
+bool bfs(int src, int sink)
+{
+    bool visited[n+1]={};
+    queue<pair<int,int>>q;
+    q.push({src,inf});
+    visited[src]=true;
+
+    while(!q.empty())
+    {
+        int u=q.front().first;
+        int flow=q.front().second;
+        q.pop();
+
+        for(auto v:adj[u])
+        {
+            if(!visited[v] && capacity[u][v]>0)
+            {
+                visited[v]=true;
+                parent[v]=u;
+
+                flow=min(flow,capacity[u][v]);
+
+                if(v==sink)
+                    return flow;
+
+                q.push({v,flow});
+            }
+        }
+    }
+
+    return 0;
+}
+
+int fordFulkerson(int src, int sink)
+{   
+    int max_flow=0;
+    mem(parent,0);
+
+    int flow;
+    while(flow=bfs(src,sink))
+    {
+        int v;
+        // update residual capacities of the edges and reverse edges 
+        // along the path 
+        for(v=sink;v!=src;v=parent[v])
+        {
+            int u=parent[v];
+            capacity[u][v]-=flow; 
+            capacity[v][u]+=flow;
+        }
+
+        // Add path flow to overall flow 
+        max_flow+=flow;
+    }
+
+    return max_flow;
+}
+
+int main()
+{
+    cin>>n>>m;
+
+    rep(i,0,m)
+    {
+        int u,v,t; cin>>u>>v>>t;
+        adj[u].pb(v);
+        adj[v].pb(u);
+        capacity[u][v]=t;
+    }
+
+    int src,sink; cin>>src>>sink;
+    cout<<fordFulkerson(src,sink)<<"\n";
+}
+
+===========================================================================================================
+#include<bits/stdc++.h>
+using namespace std;
+#define ll           long long
+#define rep(i,j,n)   for(int i=j;i<n;i++)
+#define scn(a)       scanf("%d",&a)
+#define scns(a,b)    scanf("%d %d",&a,&b)
+#define print(a)     printf("%d",a)
+#define tc           int t; scn(t); while(t--)
+#define vec          vector<int>
+#define pb           push_back    
+#define pairs        pair<int,int>
+#define f            first
+#define s            second
+#define all(v)       v.begin(),v.end()
+#define srt(v)       sort(v.rbegin(),v.rend())
+#define mem(a,b)     memset(a,b,sizeof(a))
+#define nl           printf("\n")
+#define maxx         300005
+#define inf          INT_MAX
+#define zer          INT_MIN
+const int N=5e3+5;
+int adj[N][N],Radj[N][N]; //graph and residual graph....
+int n,m,parent[N];
+
+bool bfs(int src, int sink)
+{
+    bool visited[n+1]={};
+    queue<int>q;
+    q.push(src);
+    visited[src]=true;
+
+    while(!q.empty())
+    {
+        int u=q.front();
+        q.pop();
+
+        rep(v,0,n)
+        {
+            if(!visited[v] && Radj[u][v]>0)
+            {
+                visited[v]=true;
+                parent[v]=u;
+                q.push(v);
+            }
+        }
+    }
+
+    return visited[sink]==true;
+}
+
+int fordFulkerson(int src, int sink)
+{
+    // Create a residual graph and fill the residual graph with 
+    // given capacities in the original graph as residual capacities 
+    // in residual graph 
+    rep(i,0,n)
+    rep(j,0,n)
+    Radj[i][j]=adj[i][j];
+
+    // Residual graph where Radj[i][j] indicates  
+    // residual capacity of edge from i to j (if there 
+    // is an edge. If rGraph[i][j] is 0, then there is not)
+    
+    int max_flow=0;
+    mem(parent,0);
+
+    // Augment the flow while tere is path from source to sink 
+    while(bfs(src,sink))
+    {
+        int v;
+        int flow=1e9;
+
+        // Find minimum residual capacity of the edges along the 
+        // path filled by BFS. Or we can say find the maximum flow 
+        // through the path found.
+        for(v=sink;v!=src;v=parent[v])
+        {
+            int u=parent[v];
+            flow=min(flow,Radj[u][v]);
+        }
+
+        // update residual capacities of the edges and reverse edges 
+        // along the path 
+        for(v=sink;v!=src;v=parent[v])
+        {
+            int u=parent[v];
+            Radj[u][v]-=flow; 
+            Radj[v][u]+=flow;
+        }
+
+        // Add path flow to overall flow 
+        max_flow+=flow;
+    }
+
+    return max_flow;
+}
+
+int main()
+{
+    cin>>n>>m;
+
+    rep(i,0,m)
+    {
+        int u,v,t; cin>>u>>v>>t;
+        adj[u][v]=t;
+    }
+
+
+    int src,sink; cin>>src>>sink;
+    cout<<fordFulkerson(src,sink)<<"\n";
+}

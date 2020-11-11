@@ -16,7 +16,7 @@ bool check_all_permutations(bool adj[][MAXN], int n){
         }while(next_permutation(v.begin(), v.end()));
         return false;
 }
-
+09537662528 gujrat satyandra prasad
 
 ========================================================================================
 
