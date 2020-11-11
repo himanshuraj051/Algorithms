@@ -1,0 +1,93 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll           long long
+#define rep(i,j,n)   for(int i=j;i<n;i++)
+#define scn(a)       scanf("%d",&a)
+#define scns(a,b)    scanf("%d %d",&a,&b)
+#define print(a)     printf("%d",a)
+#define tc           int t; scn(t); while(t--)
+#define vec          vector<int>
+#define pb           push_back    
+#define pairs        pair<int,int>
+#define f            first
+#define s            second
+#define all(v)       v.begin(),v.end()
+#define srt(v)       sort(v.rbegin(),v.rend())
+#define mem(a,b)     memset(a,b,sizeof(a))
+#define nl           printf("\n")
+#define maxx         300005
+#define inf          INT_MAX
+#define zer          INT_MIN
+const int N=1e5+5;
+
+stack<int>s;
+int low[N],disc[N],Time,n,m;
+vector<int>adj[N];
+
+bool inStack[N];
+
+void SSC_util(int u)
+{
+    low[u]=disc[u]=++Time;
+    s.push(u);
+    inStack[u]=true;
+
+    for(auto v: adj[u])
+    {
+        if(!disc[v])
+        {
+            SSC_util(v);
+
+            // Check if the subtree rooted with 'v' has a 
+            // connection to one of the ancestors of 'u' 
+            low[u]=min(low[u],low[v]);
+        }
+
+        else if(inStack[v])             // Update low value of 'u' only of 'v' is still in stack 
+        low[u]=min(low[u],low[v]);        // (i.e. it's a back edge, not cross edge). 
+
+    }
+
+    int w=-1;
+    if(low[u]==disc[u])
+    {
+        while(s.top() != u)
+        {
+            w=s.top();
+            inStack[s.top()]=false,
+            cout<<w<<" ";
+            s.pop();
+        }
+
+        w=s.top();
+        cout<<w<<" \n";
+        inStack[s.top()]=false;
+
+        s.pop();
+
+    }
+}
+
+void SSC()
+{
+    for(int i=0;i<n+5;i++)
+    inStack[i]=false,disc[i]=0;
+
+
+    for(int i=0;i<n;i++)
+    {
+        if(!disc[i])
+        SSC_util(i);
+    }
+}
+int main()
+{
+    cin>>n>>m;
+    rep(i,0,m)
+    {
+        int u,v; cin>>u>>v;
+        adj[u].pb(v);
+    }
+
+    SSC();
+}

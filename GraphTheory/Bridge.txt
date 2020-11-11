@@ -1,0 +1,91 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll           long long
+#define rep(i,j,n)   for(int i=j;i<n;i++)
+#define scn(a)       scanf("%d",&a)
+#define scns(a,b)    scanf("%d %d",&a,&b)
+#define print(a)     printf("%d",a)
+#define tc           int t; scn(t); while(t--)
+#define vec          vector<int>
+#define pb           push_back    
+#define pairs        pair<int,int>
+#define f            first
+#define s            second
+#define all(v)       v.begin(),v.end()
+#define srt(v)       sort(v.rbegin(),v.rend())
+#define mem(a,b)     memset(a,b,sizeof(a))
+#define nl           printf("\n")
+#define maxx         300005
+#define inf          INT_MAX
+#define zer          INT_MIN
+const int N=1e5+5;
+int n,m;
+int low[N],disc[N];
+vector<int>adj[N];
+map<pair<int,int>,int>bridge;
+int Time=0;
+
+void bridge_util(int u, int p) 
+{
+  low[u]=disc[u]= ++Time;
+
+  for(int& v:adj[u]) 
+  {
+    if(v==p) 
+    continue; 
+    if(!disc[v]) 
+    {                   
+      bridge_util(v,u);        
+
+      if(disc[u]<low[v]) 
+      bridge[{u,v}]=1;
+    } 
+
+    low[u]=min(low[u],low[v]); 
+  }
+}
+
+void Bridge() 
+{
+  Time = 0;
+
+  for(int u=0;u<n;u++)
+    if(!disc[u])
+      bridge_util(u,u);
+}
+ 
+ 
+int main()
+{
+    cin>>n>>m;
+    int u[m+1],v[m+1];
+    rep(i,0,m)
+    {
+        cin>>u[i]>>v[i];
+        u[i]--,v[i]--;
+        adj[u[i]].pb(v[i]);
+        adj[v[i]].pb(u[i]);
+    }
+    
+    Bridge();
+
+    vector<bool>itsBridge(m+1,false);
+
+    rep(i,0,m)
+    {
+        if(bridge[{u[i],v[i]}] || bridge[{v[i],u[i]}])
+        itsBridge[i]=true;
+    }
+
+    int q; scn(q);
+    
+    while(q--)
+    {
+        int con; cin>>con;
+        if(itsBridge[con-1])
+        printf("Unhappy\n");
+        else
+        printf("Happy\n");
+        
+    }
+}
