@@ -1,0 +1,97 @@
+bool check_all_permutations(bool adj[][MAXN], int n){
+        vector<int>v;
+        for(int i=0; i<n; i++)
+            v.push_back(i);
+        do{
+            bool valid=true;
+            for(int i=0; i<v.size()-1; i++){
+                if(adj[v[i]][v[i+1]] == false){
+                    valid=false;
+                    break;
+                }     
+
+            }
+            if(valid)
+                return true;
+        }while(next_permutation(v.begin(), v.end()));
+        return false;
+}
+
+
+========================================================================================
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll           long long
+#define rep(i,j,n)   for(int i=j;i<n;i++)
+#define scn(a)       scanf("%d",&a)
+#define scns(a,b)    scanf("%d %d",&a,&b)
+#define print(a)     printf("%d",a)
+#define tc           int t; scn(t); while(t--)
+#define vec          vector<int>
+#define pb           push_back    
+#define pairs        pair<int,int>
+#define f            first
+#define s            second
+#define all(v)       v.begin(),v.end()
+#define srt(v)       sort(v.rbegin(),v.rend())
+#define mem(a,b)     memset(a,b,sizeof(a))
+#define nl           printf("\n")
+#define maxx         300005
+#define inf          INT_MAX
+#define zer          INT_MIN
+const int N=1e5+5;
+
+int main()
+{
+    int t; cin>>t;
+    while(t--)
+    {
+        int n,m; cin>>n>>m;
+
+        if(m==0)
+        {
+            cout<<"No\n";
+            continue;
+        }
+
+        vector<vector<bool>>edge(m+1,vector<bool>(m+1,false));
+
+        rep(i,0,m)
+        {
+            int u,v; cin>>u>>v;
+            u--,v--;
+            edge[u][v]=true;
+            edge[v][u]=true;
+        }
+
+        vector<int>v;
+
+        rep(i,0,n)
+        v.pb(i);
+
+        int isHamiltonian=false;
+
+        do
+        {
+            isHamiltonian=true;
+
+            rep(i,0,n-1)
+            if(edge[v[i]][v[i+1]]==false)
+            {
+                isHamiltonian=false;
+                break;
+            }
+
+            if(isHamiltonian)
+            {
+                break;
+            }
+        }while(next_permutation(all(v)));
+
+        if(isHamiltonian)
+        cout<<"Yes\n";
+        else
+        cout<<"No\n";
+    }
+}
