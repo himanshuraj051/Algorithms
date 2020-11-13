@@ -1,0 +1,100 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll           long long
+#define rep(i,j,n)   for(ll i=j;i<n;i++)
+#define scn(a)       scanf("%lld",&a)
+#define scns(a,b)    scanf("%lld %lld",&a,&b)
+#define print(a)     printf("%lld",a)
+#define tc           ll t; scn(t); while(t--)
+#define vec          vector<ll>
+#define pb           push_back    
+#define pairs        pair<ll,ll>
+#define f            first
+#define s            second
+#define all(v)       v.begin(),v.end()
+#define srt(v)       sort(v.rbegin(),v.rend())
+#define mem(a,b)     memset(a,b,sizeof(a))
+#define nl           printf("\n")
+#define maxx         200005
+#define inf          INT_MAX
+#define zer          INT_MIN
+ll counts[maxx], n;
+vec g[maxx];
+ll mn,x;
+map<ll,ll> m;
+ll cost[maxx],level[maxx],temp,mx=-1,res;
+
+void dfs(ll u,ll par,ll d)
+{
+    level[u]=d;
+    temp+=level[u]*cost[u];
+
+    counts[u]=cost[u];
+    for(auto t:g[u])
+    {
+        if(t!=par)
+        {
+            dfs(t,u,d+1);
+            counts[u]+=counts[t];
+        }
+    }
+}
+void rerooting(ll u,ll par)
+{
+    for(auto t:g[u])
+    {
+        if(t!=par)
+        {
+            counts[u]-=counts[t];
+            res+=counts[u];
+            res-=counts[t];
+            counts[t]+=counts[u];
+
+            mx=max(mx,res);
+
+            rerooting(t,u);
+
+            counts[t]-=counts[u];
+            res+=counts[t];
+            res-=counts[u];
+            counts[u]+=counts[t];
+        }
+    }
+    
+}
+void init()
+{
+    rep(i,0,n+1)
+    g[i].clear(),counts[i]=0;
+
+
+    rep(i,1,n+1)
+    cin>>cost[i];
+
+    m.clear();
+    mn=maxx;
+    x=0;
+}
+int main()
+{
+    scn(n);
+    init();
+
+    ll e1,e2;
+    rep(i,0,n-1)
+    {
+        ll x,y;
+        cin>>x>>y;
+        g[x].pb(y);
+        g[y].pb(x);
+    }
+
+    dfs(1,0,0);
+    res=temp;
+    // cout<<counts[1]<<endl;
+    rerooting(1,0);
+
+    // cout<<temp<<endl;
+
+    cout<<max(mx,temp);
+}

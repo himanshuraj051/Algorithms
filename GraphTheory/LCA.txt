@@ -1,0 +1,41 @@
+void dfs_util(int u,int par)
+{
+	dp[u][0]=par;
+
+	in[u]=tim++;
+	
+	rep(i,1,lim+1)
+	dp[u][i]=dp[dp[u][i-1]][i-1];
+  
+
+	for(auto it:g[u])
+	if(it!=par)
+	dfs_util(it,u);
+
+	out[u]=tim++;
+}
+
+bool isancestor(int u,int v)
+{
+	return (in[u]<in[v] && out[u]>out[v]);
+}
+
+int LCA(int u,int v)
+{
+	if(isancestor(u,v))
+	return u;
+	
+	if(isancestor(v,u))
+	return v;
+	
+	if(u==v)
+	return u;
+	
+	for(int i=lim;i>=0;i--)
+	{
+		if(!isancestor(dp[u][i],v))
+		u=dp[u][i];
+	}
+	
+	return dp[u][0];
+}
